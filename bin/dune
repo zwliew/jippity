@@ -1,0 +1,12 @@
+(executable
+ (public_name jippity)
+ (name main)
+ (libraries
+  cohttp-eio
+  dotenv
+  eio_main
+  jippity
+  mirage-crypto-rng-eio
+  tls-eio
+  yojson)
+ (preprocess (pps ppx_yojson_conv)))

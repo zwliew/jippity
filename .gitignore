@@ -1,0 +1,5 @@
+# ocamlbuild working directory
+_build/
+
+# Environment variables
+.env
