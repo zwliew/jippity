@@ -69,7 +69,7 @@ let () =
   (* TODO: Vet the dotenv library *)
   Dotenv.export ();
   let api_key =
-    match Sys.getenv_opt "API_KEY" with
+    match Sys.getenv_opt "OPENAI_API_KEY" with
     | Some x -> x
     | None -> failwith "API_KEY not found in environment variables."
   in
