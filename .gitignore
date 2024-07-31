@@ -3,3 +3,6 @@ _build/
 
 # Environment variables
 .env
+
+# Conversation logs
+last_convo.json

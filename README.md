@@ -5,5 +5,5 @@ A simple CLI wrapper for GPT.
 ## Usage
 
 ```sh
-$ jippity "<my-urgent-prompt-that-i-hope-my-ai-overlords-can-answer-satisfactorily>"
+$ jippity [-c] [-s "<system_message>"] "<my_prompt_that_i_urgently_hope_my_ai_overlords_can_answer_satisfactorily>"
 ```
