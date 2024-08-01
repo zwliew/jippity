@@ -116,10 +116,11 @@ let () =
     | None -> failwith "API_KEY not found in environment variables."
   in
   (* Construct and send request *)
+  let log_file_path = Filename.concat (Unix.getenv "HOME") "jippity_last_convo.json" in
   let open_flags = [ Open_rdonly; Open_creat; Open_text ] in
   let open_flags = if continue then open_flags else Open_trunc :: open_flags in
   let msg_log =
-    In_channel.with_open_gen open_flags 0o644 "last_convo.json" (fun ic ->
+    In_channel.with_open_gen open_flags 0o644 log_file_path (fun ic ->
       (match In_channel.input_all ic with
        | "" -> Printf.sprintf "[%s]" safe_sys_msg
        | x -> x)
@@ -160,6 +161,6 @@ let () =
   let reply_msg = parse_top_choice body in
   print_endline reply_msg;
   let msg_log = msg_log @ [ { role = "assistant"; content = reply_msg } ] in
-  Out_channel.with_open_gen open_flags 0o644 "last_convo.json" (fun oc ->
+  Out_channel.with_open_gen open_flags 0o644 log_file_path (fun oc ->
     Out_channel.output_string oc @@ Yojson.Safe.to_string @@ yojson_of_message_log msg_log)
 ;;
