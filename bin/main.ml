@@ -59,6 +59,8 @@ type message_log_item =
 
 type message_log = message_log_item list [@@deriving yojson]
 
+let debug = ref false
+
 let log_file_path =
   let home_path =
     match Sys.getenv_opt "HOME" with
@@ -95,6 +97,7 @@ let parse_args () =
   let speclist =
     [ "-s", Arg.Set_string sys_msg, "Custom system message"
     ; "-c", Arg.Set continue, "Continue the last conversation"
+    ; "-d", Arg.Set debug, "Print debug info"
     ]
   in
   let usage_msg = {|Usage: jippity [-s "<system_message>"] [-c] "<prompt>"|} in
@@ -123,6 +126,14 @@ let read_api_key () =
   match api_key with
   | Some x -> x
   | None -> failwith "OPENAI_API_KEY not found in environment variables."
+;;
+
+let print_boxed text =
+  let len = String.length text in
+  let border = String.make (len + 4) '-' in
+  Printf.printf "+%s+\n" border;
+  Printf.printf "|  %s  |\n" text;
+  Printf.printf "+%s+\n" border
 ;;
 
 let init_msg_log prompt sys_msgs continue =
@@ -180,8 +191,13 @@ let () =
   let client =
     Cohttp_eio.Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  let body = send_req client sw msg_log api_key in
-  let reply_msg = parse_top_choice body in
+  let resp_body = send_req client sw msg_log api_key in
+  if !debug
+  then (
+    print_boxed "Debug info:";
+    print_endline resp_body);
+  let reply_msg = parse_top_choice resp_body in
+  print_boxed "Response:";
   print_endline reply_msg;
   write_msg_log (msg_log @ [ { role = "assistant"; content = reply_msg } ])
 ;;
