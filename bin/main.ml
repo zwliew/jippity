@@ -3,6 +3,7 @@ open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 type message =
   { role : string
   ; content : string
+  ; refusal : string option
   }
 [@@deriving yojson]
 
